@@ -17,7 +17,8 @@ body {
     width: 100%;
 }
 
-.record-btn {
+.record-btn,
+.capture-btn {
     position: fixed;
     height: 5rem;
     width: 5rem;
@@ -25,4 +26,8 @@ body {
     border-radius: 50%;
     top: 34vh;
     right: 4vw;
+}
+
+.capture-btn {
+    top: 50vh;
 }
