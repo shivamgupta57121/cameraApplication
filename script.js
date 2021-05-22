@@ -1,7 +1,11 @@
 let videoRecorder = document.querySelector("#record-video");
 let captureBtn = document.querySelector("#capture-photo");
 let videoElem = document.querySelector("#video-elem");
-// let audioElem = document.querySelector("audio");
+let timingELem = document.querySelector("#timing");
+let clearObj;
+let allFilters = document.querySelectorAll(".filter");
+let uiFilter = document.querySelector(".ui-filter");
+let filterColor = "";
 let constraints = {
     video: true,
     audio: true
@@ -46,11 +50,17 @@ videoRecorder.addEventListener("click", function () {
     }
     if (recordState == false) {
         mediaRecorder.start();
-        videoRecorder.innerHTML = "Recording...";
+        // videoRecorder.innerHTML = "Recording...";
+        videoRecorder.classList.add("record-animation");
+        // start time and show
+        startCounting();
         recordState = true;
     } else {
         mediaRecorder.stop();
-        videoRecorder.innerHTML = "Record";
+        // videoRecorder.innerHTML = "Record";
+        videoRecorder.classList.remove("record-animation");
+        // stop time and hide
+        stopCounting();
         recordState = false;
     }
 })
@@ -61,8 +71,13 @@ captureBtn.addEventListener("click", function () {
     canvas.width = videoElem.videoWidth;
     canvas.height = videoElem.videoHeight;
     let tool = canvas.getContext("2d");
+    captureBtn.classList.add("capture-animation");
     // draw a frame on that canvas
     tool.drawImage(videoElem, 0, 0);
+    // translucent filter color
+    // drawn above photo
+    tool.fillStyle = filterColor;
+    tool.fillRect(0, 0, canvas.width, canvas.height);
     // toDataURL
     let link = canvas.toDataURL();
     // download
@@ -72,5 +87,46 @@ captureBtn.addEventListener("click", function () {
     anchor.click();
     anchor.remove();
     canvas.remove();
-
+    // need one second of animation
+    setTimeout(function () {
+        captureBtn.classList.remove("capture-animation");
+    }, 1000);
 })
+
+// function to start timer on click of record btn
+function startCounting() {
+    timingELem.classList.add("timing-active");
+    let timeCount = 0;
+    clearObj = setInterval(function () {
+        let seconds = timeCount % 60 < 10 ? `0${timeCount % 60}` : `${timeCount % 60}`;
+        let minutes = timeCount / 60 < 10 ? `0${Number.parseInt(timeCount / 60)}` : `${Number.parseInt(timeCount / 60)}`;
+        let hours = timeCount / 3600 < 10 ? `0${Number.parseInt(timeCount / 3600)}` : `${Number.parseInt(timeCount / 3600)}`;
+        timingELem.innerText = `${hours}:${minutes}:${seconds}`;
+        timeCount++;
+    }, 1000);
+}
+
+// function to stop timer on again click of record btn
+function stopCounting() {
+    timingELem.classList.remove("timing-active");
+    timingELem.innerText = "00:00:00";
+    clearInterval(clearObj);
+}
+
+// apply filter 
+for (let i = 0; i < allFilters.length; i++) {
+    allFilters[i].addEventListener("click", function () {
+        // add filter to ui
+        let color = allFilters[i].style.backgroundColor;
+        console.log(color);
+        if (color) {
+            uiFilter.classList.add("ui-filter-active");
+            uiFilter.style.backgroundColor = color;
+            filterColor = color;
+        } else {
+            uiFilter.classList.remove("ui-filter-active");
+            uiFilter.style.backgroundColor = "";
+            filterColor = "";
+        }
+    })
+}
