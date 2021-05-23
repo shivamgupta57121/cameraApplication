@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery</title>
+</head>
+
+<body>
+    <h1>Gallery</h1>
+    <script>
+        let db;
+        let openRequest = indexedDB.open("camera", 1);
+        openRequest.onsuccess = function () {
+            // if exist then will get db from here 
+            db = openRequest.result;
+            viewMedia("img");
+            viewMedia("video");
+        }
+        openRequest.onerror = function (err) {
+            console.log(err)
+        }
+        openRequest.onupgradeneeded = function () {
+            // 1st create
+            db = openRequest.result;
+            db.createObjectStore("img", { keyPath: "mid" });
+            db.createObjectStore("video", { keyPath: "mid" });
+        }
+
+        function viewMedia(table) {
+            if (db) {
+                // to get transaction
+                let tx = db.transaction(table, "readwrite");
+                // to get objectStore
+                let objStore = tx.objectStore(table);
+                // async
+                let data = objStore.openCursor();
+                data.onsuccess = function () {
+                    let cursor = data.result;
+                    if (cursor) {
+                        let link = cursor.value.media;
+                        let img = document.createElement("img");
+                        img.src = link;
+                        img.style.height = 200 + "px";
+                        img.style.margin = "10px";
+                        document.body.appendChild(img);
+                        cursor.continue();
+                    } else {
+                        console.log("Data Shown");
+                    }
+                }
+
+            } else {
+                console.log("DB is loading");
+            }
+        }
+
+    </script>
+</body>
+
+</html>

@@ -77,28 +77,32 @@ captureBtn.addEventListener("click", function () {
     captureBtn.classList.add("capture-animation");
 
     // scale(x,y) 
-    tool.scale(zoomLevel,zoomLevel);
-    let x = (canvas.width/zoomLevel - canvas.width)/2;
-    let y = (canvas.height/zoomLevel - canvas.height)/2;
+    tool.scale(zoomLevel, zoomLevel);
+    let x = (canvas.width / zoomLevel - canvas.width) / 2;
+    let y = (canvas.height / zoomLevel - canvas.height) / 2;
     // draw a frame on that canvas
     tool.drawImage(videoElem, x, y);
 
 
     // translucent filter color
     // drawn above photo
-    if(filterColor){
+    if (filterColor) {
         tool.fillStyle = filterColor;
         tool.fillRect(0, 0, canvas.width, canvas.height);
     }
     // toDataURL
     let link = canvas.toDataURL();
-    // download
-    let anchor = document.createElement("a");
-    anchor.href = link;
-    anchor.download = "file.png";
-    anchor.click();
-    anchor.remove();
-    canvas.remove();
+
+    addMediaToDB("img", link);
+
+    // // download
+    // let anchor = document.createElement("a");
+    // anchor.href = link;
+    // anchor.download = "file.png";
+    // anchor.click();
+    // anchor.remove();
+    // canvas.remove();
+
     // need one second of animation
     setTimeout(function () {
         captureBtn.classList.remove("capture-animation");
@@ -146,15 +150,15 @@ for (let i = 0; i < allFilters.length; i++) {
 // Zoom functionality
 zoomInElem.addEventListener("click", function () {
     // console.log("Zoom In");
-    if(zoomLevel < 3){
-        zoomLevel += 0.2; 
+    if (zoomLevel < 3) {
+        zoomLevel += 0.2;
         videoElem.style.transform = `scale(${zoomLevel})`;
     }
 });
 zoomOutElem.addEventListener("click", function () {
     // console.log("Zoom Out");
-    if(zoomLevel > 1){
-        zoomLevel -= 0.2; 
+    if (zoomLevel > 1) {
+        zoomLevel -= 0.2;
         videoElem.style.transform = `scale(${zoomLevel})`;
     }
 });

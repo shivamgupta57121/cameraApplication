@@ -147,3 +147,21 @@ body {
 .icon {
     font-size: 180%;
 }
+
+/* Gallery Btn */
+.gallery {
+    position: fixed;
+    z-index: 6;
+    bottom: 2vh;
+    right: 5vw;
+    height: 5rem;
+    width: 5rem;
+    color: white;
+    font-size: 120%;
+    text-decoration: none;
+    text-align: center;
+    padding-top: 25px;
+    border: 2px solid white;
+    border-radius: 50%;
+    background-color: #444;
+}
